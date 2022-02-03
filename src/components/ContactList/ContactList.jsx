@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'; // Импортируем хуки для использования стейта и доставки экшинов прямо в компоненте
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'; // Импортируем хуки для использования стейта и доставки экшинов прямо в компоненте
 import { getFilter } from 'redux/contact/contacts-selector'; // Импортируем части стейта из selector
 import contactsActions from 'redux/contact/contacts-actions'; // Импортируем экшны для диспатча
 import { List } from './ContactList.styled'; //Стили
@@ -9,19 +9,22 @@ import Loader from '../Loader/Loader';
 
 const ContactList = () => {
   const { data: contacts, isFetching } = useFetchContactsQuery();
-  const filter = useSelector(getFilter);
-
-  // const contacts = useSelector(getfilteredContacts);
-
+  const filter = useSelector(getFilter, shallowEqual);
+  // const filteredContacts = contacts.filter(contact =>
+  //   contact.name.toLoverCase().includes(filter.toLoverCase()),
+  // );
+  // console.log(filteredContacts);
   return (
     <List>
       {contacts &&
-        contacts
-          .filter(el => el?.name.toUpperCase().includes(filter.toUpperCase()))
-          .map(contact => <ContactItem key={contact.id} contact={contact} />)}
+        contacts.map(contact => (
+          <ContactItem key={contact.id} contact={contact} />
+        ))}
       {isFetching && <Loader />}
     </List>
   );
 };
 
 export default ContactList;
+
+// .filter(el => el?.name.toLoverCase().includes(filter.toLoverCase()))

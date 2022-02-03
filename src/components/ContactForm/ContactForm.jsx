@@ -1,7 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'; // Импортируем хуки для использования стейта и доставки экшинов прямо в компоненте
-import contactsActions from 'redux/contact/contacts-actions'; // Импорт экшенов из контактов
 import { useState } from 'react';
-import { getContacts } from 'redux/contact/contacts-selector'; // Импортируем части стейта из selector
 import { toast } from 'react-toastify';
 import { Form, Label, Input, Button } from './ContactForm.styled'; //Стили
 import {
@@ -12,7 +9,7 @@ import {
 const ContactForm = () => {
   // Локальный стейт контакта
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
   const { data: contacts } = useFetchContactsQuery();
   console.log(contacts);
@@ -26,40 +23,40 @@ const ContactForm = () => {
         setName(value);
         break;
 
-      case 'number':
-        setNumber(value);
+      case 'phone':
+        setPhone(value);
         break;
 
       default:
         return;
     }
   };
-  // const duplicateName = () =>
-  //   contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())
-  //     .length !== 0;
+
   // Проверка на дубликат
-  // const duplicateName = () =>
-  //   contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
-  //   при сабмите отправляет экшин добавления контакта
-  const onSubmit = (name, number) => createContact(name, number);
-  // Метод на отправке формы. Формирует из локального стейта контакт и передает во внешний метод
+  const normalizedContact = name.toLowerCase();
+  const duplicateName = contacts.some(
+    contact => contact.name.toLowerCase() === normalizedContact,
+  );
+
+  // Метод на отправке формы. Формирует из локального стейта контакт и передает на бэкенд.
   const handleSubmit = event => {
     event.preventDefault();
 
-    // if (duplicateName) {
-    //   toast.warn(`${name} is already on contacts`);
+    if (duplicateName) {
+      toast.error(`${name} is already in contact list`);
+      resetForm();
+      return;
+    }
 
-    //   return;
-    // }
-
-    onSubmit(name, number);
+    createContact(name, phone);
+    toast.success(`${name} is added to the contact list!`);
     resetForm();
   };
 
   // Сброс полей формы (после отправки)
   const resetForm = () => {
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -82,10 +79,10 @@ const ContactForm = () => {
         Number
         <Input
           type="tel"
-          name="number"
+          name="phone"
           placeholder="Phone number"
           aria-label="Input for your phone number"
-          value={number} // Пишем значение в стейт
+          value={phone} // Пишем значение в стейт
           onChange={handleChange} // Наблюдающий метод
           pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
           title="Номер телефона должен состоять из 11-12 цифр и может содержать цифры, пробелы, тире, пузатые скобки и может начинаться с +"
