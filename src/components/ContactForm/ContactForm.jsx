@@ -4,16 +4,19 @@ import { useState } from 'react';
 import { getContacts } from 'redux/contact/contacts-selector'; // Импортируем части стейта из selector
 import { toast } from 'react-toastify';
 import { Form, Label, Input, Button } from './ContactForm.styled'; //Стили
+import {
+  useFetchContactsQuery,
+  useCreateContactMutation,
+} from 'redux/contact/contacts-sliceApi';
 
 const ContactForm = () => {
   // Локальный стейт контакта
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  // Из глобального стейта через хук исп. сразу в компоненте
-  const contacts = useSelector(getContacts);
-  //  через хук исп. сразу в компоненте
-  const dispatch = useDispatch();
+  const { data: contacts } = useFetchContactsQuery();
+  console.log(contacts);
+  const [createContact] = useCreateContactMutation();
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -31,23 +34,25 @@ const ContactForm = () => {
         return;
     }
   };
-
+  // const duplicateName = () =>
+  //   contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())
+  //     .length !== 0;
   // Проверка на дубликат
-  const duplicateName = contacts.find(
-    contact => contact.name === name.toLowerCase(),
-  );
+  // const duplicateName = () =>
+  //   contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
   //   при сабмите отправляет экшин добавления контакта
-  const onSubmit = (name, number) =>
-    dispatch(contactsActions.addContact(name, number));
+  const onSubmit = (name, number) => createContact(name, number);
   // Метод на отправке формы. Формирует из локального стейта контакт и передает во внешний метод
   const handleSubmit = event => {
     event.preventDefault();
-    if (duplicateName) {
-      toast.warn(`${name} is already on contacts`);
-      return;
-    }
 
-    onSubmit(name.toLowerCase(), number);
+    // if (duplicateName) {
+    //   toast.warn(`${name} is already on contacts`);
+
+    //   return;
+    // }
+
+    onSubmit(name, number);
     resetForm();
   };
 
@@ -93,15 +98,22 @@ const ContactForm = () => {
   );
 };
 
-// Из глобального стейта в пропы компонента
-// const mapStateToProps = state => ({
-//   contacts: state.contacts.items,
-// });
-
-// Из глобального стейта в пропы компонента - методы
-// const mapDispatchToProps = dispatch => ({
-//   onSubmit: (name, number) =>
-//     dispatch(contactsActions.addContact(name, number)),
-// });
-// export default connect(null, mapDispatchToProps)(ContactForm);
 export default ContactForm;
+
+// const isAlreadyContacts =()=> contacts.find((el) => el.name.toLowerCase() === name.toLowerCase())
+// .length !== 0;
+
+// const handleSubmit = (e) => {
+// e.preventDefault();
+// const contact = { name, phone: number }
+// if (isAlreadyContacts) {
+//   onWarning(`Contacts ${name} already exist`)
+// } else {
+//   addContact(contact)
+// }
+// setName("");
+// setNumber("");
+// };
+// useEffect(() => {
+// if (error) onError(`${error.status} ${error.data.msg}`)
+// }, [error]);

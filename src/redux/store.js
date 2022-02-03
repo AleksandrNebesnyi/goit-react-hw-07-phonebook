@@ -12,7 +12,7 @@ import {
   REGISTER,
 } from 'redux-persist'; // Импорт функции персистеров и фикса консоли
 
-import contactsReducer from './contact/contacts-reducer';
+import filterReduser from './contact/contacts-reducer';
 
 // Создание прослоек + логгер. Важен порядок!
 const middleware = [
@@ -28,7 +28,7 @@ const middleware = [
 // Создание хранилища (корневой редюсер + прослойки + тулзы только для разработки)
 const store = configureStore({
   reducer: {
-    contacts: contactsReducer,
+    filter: filterReduser,
     [contactApi.reducerPath]: contactApi.reducer,
   },
   middleware,
@@ -36,6 +36,7 @@ const store = configureStore({
 });
 
 setupListeners(store.dispatch);
-// Экспорт хранилища а
-// eslint-disable-next-line
+
+// Экспорт хранилища
+
 export default store;
