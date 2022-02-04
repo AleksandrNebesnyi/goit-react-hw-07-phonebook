@@ -12,8 +12,8 @@ const ContactForm = () => {
   const [phone, setPhone] = useState('');
 
   const { data: contacts } = useFetchContactsQuery();
-  console.log(contacts);
-  const [createContact] = useCreateContactMutation();
+
+  const [createContact, isLoading] = useCreateContactMutation();
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -32,15 +32,14 @@ const ContactForm = () => {
     }
   };
 
-  // Проверка на дубликат
-  const normalizedContact = name.toLowerCase();
-  const duplicateName = contacts.some(
-    contact => contact.name.toLowerCase() === normalizedContact,
-  );
-
   // Метод на отправке формы. Формирует из локального стейта контакт и передает на бэкенд.
   const handleSubmit = event => {
     event.preventDefault();
+    // Проверка на дубликат
+    const normalizedContact = name.toLowerCase();
+    const duplicateName = contacts.find(
+      contact => contact.name.toLowerCase() === normalizedContact,
+    );
 
     if (duplicateName) {
       toast.error(`${name} is already in contact list`);
@@ -90,27 +89,11 @@ const ContactForm = () => {
         />
       </Label>
 
-      <Button type="submit">Add contact</Button>
+      <Button type="submit" disabled={isLoading}>
+        Add contact
+      </Button>
     </Form>
   );
 };
 
 export default ContactForm;
-
-// const isAlreadyContacts =()=> contacts.find((el) => el.name.toLowerCase() === name.toLowerCase())
-// .length !== 0;
-
-// const handleSubmit = (e) => {
-// e.preventDefault();
-// const contact = { name, phone: number }
-// if (isAlreadyContacts) {
-//   onWarning(`Contacts ${name} already exist`)
-// } else {
-//   addContact(contact)
-// }
-// setName("");
-// setNumber("");
-// };
-// useEffect(() => {
-// if (error) onError(`${error.status} ${error.data.msg}`)
-// }, [error]);

@@ -19,7 +19,7 @@ const ContactItem = ({ contact }) => {
         onClick={() => deleteContact(id)}
         disabled={isDeleting}
       >
-        {isDeleting && <Loader size={12} />}
+        {isDeleting && <Loader height={20} width={20} />}
         Delete
       </Button>
     </Item>

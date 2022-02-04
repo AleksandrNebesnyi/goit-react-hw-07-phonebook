@@ -1,12 +1,14 @@
-import { Audio } from 'react-loader-spinner';
+import { TailSpin } from 'react-loader-spinner';
 import { LoaderStyled } from './Loader.styled';
 
-const Loader = () => {
+const Loader = ({ height, width }) => {
   return (
     <LoaderStyled>
-      <Audio type="TailSpin" color="#02be6e" height={100} width={100} />
+      <TailSpin color="#02be6e" height={height} width={width} />
     </LoaderStyled>
   );
 };
 
 export default Loader;
+
+// TailSpin color="#00BFFF" height={80} width={80}

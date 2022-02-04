@@ -1,5 +1,5 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'; // Импорт функции создания хранилища и прослойки
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 import { contactApi } from './contact/contacts-sliceApi';
 
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -21,7 +21,7 @@ const middleware = [
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
   }),
-  logger,
+  // logger,
   contactApi.middleware,
 ];
 
