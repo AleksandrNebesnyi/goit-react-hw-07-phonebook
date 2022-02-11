@@ -13,7 +13,7 @@ const ContactForm = () => {
 
   const { data: contacts } = useFetchContactsQuery();
 
-  const [createContact, isLoading] = useCreateContactMutation();
+  const [createContact, { isLoading }] = useCreateContactMutation();
 
   const handleChange = event => {
     const { name, value } = event.target;
